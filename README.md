@@ -92,7 +92,7 @@ There are 7 functions intotal, inclusing the main function. I will explain them 
    
    For any repeat doner, recip_id as key of second map, the numerical donation amount "TRANSACTION_AMT"(called function num) as value for second map.
    The Numpy function percentile is used to calculate the requied percentile, chosing 'nearest' method and round to integer. Numpy percentile method is efficient in that it uses partition to find the percentile.
-   The Numpu function sum is used to calculate the total amount.
+   The Numpy function sum is used to calculate the total amount.
    The number of repeat donor is calculated by the lenth of list.
    
 
