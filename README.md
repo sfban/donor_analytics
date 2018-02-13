@@ -18,18 +18,18 @@ This map can be used to identify the repeat donor.
 When a repeat donor is found, it is saved to the second map.
 In the second map, recipient, zip code, and calendar year are combined as key, the donation amount is saved as value(list type).
 The value (list) of this map can be used to calculate the donation percentile, sum and the donator number.
-After one repeat donor is found and the reqired values are calculated, genrator yeild is used at the end of function gen_map. 
-For each repeat donor record, the code output(function output_record).
+After one repeat donor is found and the reqired values are calculated, generator yeild is used at the end of function gen_map. 
+For each repeat donor record, the code writes it to file (function output_record).
 
-There are 7 functions intotal, including the main function. I will explain them one by one in the following.
+There are 7 functions in total, including the main function. I will explain them one by one in the following.
  
 
 ### 1. function valid_record
 
    This function is to identify if the record is valid. 
-   Input is a named tuple called donor; Output is logical Ture or False.
+   Input is a named tuple called donor; Output is logical True or False.
    
-   There are six variables need to be checked, as discussed in the code challenge README.
+   There are six variables to be checked, as discussed in the code challenge README.
    1) CMTE_ID: identifies the flier, which for our purposes is the recipient of this contribution
    2) NAME: name of the donor
    3) ZIP_CODE: zip code of the contributor (we only want the first five digits/characters)
@@ -37,17 +37,17 @@ There are 7 functions intotal, including the main function. I will explain them 
    5) TRANSACTION_AMT: amount of the transaction
    6) OTHER_ID: a field that denotes whether contribution came from a person or an entity. 
    
-   For "OTHER_ID", as described in the code challenge README we only want records that have the field, OTHER_ID, set to empty. If the OTHER_ID field contains any other value, it was considered to be invalid.
+   For "OTHER_ID", as described in the code challenge README we only want records that have it empty. If the OTHER_ID field contains any other value, it was considered to be invalid.
    
    For "ZIP_CODE", the data dictionary has the ZIP_CODE occupying nine characters, for the purposes of the challenge, we only consider the first five characters of the field as the zip code. it will be considered invalid if it is empty or fewer than five digits. I was thinking to limit the ZIP_CODE only to be digits, but in th code challenge readme, "we only want the first five gidits/characters", whih means it is possible to be characters. So I did not impose the limit.
    
-   For "TRANSACTION_DT",  it will be consider invalid if it is empty or malformed. In the code, first I copied and saved year, month, and day, then I use the python module "datetime" to identify its validity. 
+   For "TRANSACTION_DT",  it will be considered invalid if it is empty or malformed. In the code, first I copied and saved year, month, and day, then I use the python module "datetime" to identify its validity. 
    
    For "TRANSACTION_AMT", it should be numarical type and should be positive number. It will be invalid if it is empty, or zero, or negative.
    
    For "CMTE_ID", it will be invalid if it is empty.
    
-   For "NAME", it is the most complicated variable to identify. I searched the "Naming in the United States" on wikipedia. It says a few restrictions do exist, but vary by state. Some states ban the use of numerical digits or pictogrames. A few states ban the use of obscenity. There are also a few states, Kentucky for instance, that have no naming laws whatsoever. There are also Spanish or German names, which are with diacritical marks or accents. For this code, I simply limited the name to be 26 alphabetical characters of English language, and there could be space, '-', '.', or ',' inside the names. The 're' module is used to split the parts of name and each part is checked separately if it is alphabet. 
+   For "NAME", it is the most complicated variable to identify. I searched the "Naming in the United States" on wikipedia. It says a few restrictions do exist, but vary by state. Some states ban the use of numerical digits or pictogrames. A few states ban the use of obscenity. There are also a few states, Kentucky for instance, that have no naming laws whatsoever. There are also Spanish or German names, which are with diacritical marks or accents. For this code, I simply limited the name to be 26 alphabetical characters of English language, and there could be space, '-', '.', or ',' inside the names. The 're' module is used to split the parts of name and each part is checked separately if it is alphabetical. 
 
 
 ### 2. function gen_records
@@ -64,17 +64,17 @@ There are 7 functions intotal, including the main function. I will explain them 
 ### 3. function num
 
    This function is to change the variable type from string to numarical type int or float.
-   Input is a string type of a donation amount; Output is a numerical type(int or float) of the donation amount.
+   Input is a string type of a donation amount; Output is a numerical type (int or float) of the donation amount.
    
    This function will be called in function gen_map. 
    It is used for donation amount variable "TRANSACTION_AMT", the type is NUMBER(14,2) as described on FEC website. 
-   As shown in the example, most of the donation amount is a integer type. 
-   When the code read-in the donation record, it is a string type. 
+   As shown in the example, most of the donation amount is integer type. 
+   When the code reads in the donation record, it is a string type. 
    The code changes the type to int if the donation amount is integer and changes the type to float if the donation amount is decimal number.
 
 ### 4. function gen_map
    
-   This function identifies repeat donors, calculate three values (donation amount percentile, donation amount sum, and donor nubmer) for contributions coming from repeat donors for each recipient, zip code and calendar year.
+   This function identifies repeat donors, calculate three values (donation amount percentile, donation amount sum, and total number of donations) for contributions coming from repeat donors for each recipient, zip code and calendar year.
    Input is the valid donation records from function gen_records and percent value; Output is a output record by generator via yield.
    
    Define two defalut dictionaries(maps). 
@@ -87,7 +87,7 @@ There are 7 functions intotal, including the main function. I will explain them 
    define the recip_id = recipient + zip code + calender year as the key of the second map. 
    
    We put the year as the key value of the first map (the default value is 0 before we put in any value). 
-   As described in the code challenge readme, for the same donor_id,  if a donor had previously contributed to any recipient listed in the itcont.txt file in any prior calendar year, that donor is considered a repeat donor. But the data is not necessarily in order, we may find a smaller year later. If we find a smaller year after the first value, he/she will not be consider a repeat donor; if we find a bigger year, this will be a repeat donor record. 
+   As described in the code challenge readme, for the same donor_id,  if a donor had previously contributed to any recipient listed in the itcont.txt file in any prior calendar year, that donor is considered a repeat donor. But the data is not necessarily in chronological order, we may find a smaller year later. If we find a smaller year after the first value, he/she will not be consider a repeat donor; if we find a bigger year, this will be a repeat donor record. 
    So if we find the year== 0 or the new value of year is smaller than the corrent year, we update the year value and skip to next record(i.e., we save the smallest year we can found from the recoder for this map). If we found a bigger year, this record will be repeat donor. 
    
    For any repeat doner, recip_id as key of second map, the numerical donation amount "TRANSACTION_AMT"(called function num) as value for second map (list type, can hold more than one amount).
