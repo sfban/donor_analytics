@@ -5,11 +5,11 @@
 
 To run the program, use following command in the root directory, which follows the instruction,
 
-python ./src/donation-analytics_sfban.py ./input/itcont.txt ./input/percentile.txt ./output/repeat_donors.txt
+*python ./src/donation-analytics_sfban.py ./input/itcont.txt ./input/percentile.txt ./output/repeat_donors.txt*
 
 where the first file is donor information input, second file is percentile input, and the last one is output.
 
-**Or**, simply run ./run.sh in the root directory.
+**Or**, simply run *./run.sh* in the root directory.
 
 
 ## Code Details
@@ -23,6 +23,7 @@ Following modules were used
    4) re
    5) datetime
 
+### Summary
    
 When the input data is huge or streaming in, generator is a good way to implement processing pipelines (fast, less memory and space).
 Using generator, the code could read-in and process the donation records one by one (function gen-records). 
