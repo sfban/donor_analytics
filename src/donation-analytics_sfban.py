@@ -21,7 +21,7 @@ def valid_record(donor):
         return False
     
     #If ZIP_CODE is an invalid zip code (i.e., empty, fewer than five digits/characters)
-    if len(donor.ZIPCODE) < 5 or (not donor.ZIPCODE.isalnum()): return False
+    if len(donor.ZIP_CODE) < 5 or (not donor.ZIP_CODE.isalnum()): return False
     
     #If the NAME is an invalid name (e.g., empty, malformed)
     # check if characters are in alphabet
@@ -35,14 +35,14 @@ def valid_record(donor):
     if not (donor.CMTE_ID and donor.TRANSACTION_AMT): return False
     
     # if TRANSACTION_AMT IS NEGATIVE OR ZERO: 
-    if int(donor.TRANSACTION_AMT) <= 0: return False
+    if float(donor.TRANSACTION_AMT) <= 0: return False
 
     return True
 
 
 def gen_records(input_file):
     
-    Donor = namedtuple('donor', ['CMTE_ID', 'NAME', 'ZIPCODE', 'TRANSACTION_DT', 'TRANSACTION_AMT', 'OTHER_ID'])
+    Donor = namedtuple('donor', ['CMTE_ID', 'NAME', 'ZIP_CODE', 'TRANSACTION_DT', 'TRANSACTION_AMT', 'OTHER_ID'])
     
     with open(input_file, 'r') as file:
         
@@ -54,12 +54,12 @@ def gen_records(input_file):
             # need to check these in function valid_record
             CMTE_ID = record[0]
             NAME = record[7]
-            ZIPCODE = record[10][:5]
+            ZIP_CODE = record[10][:5]
             TRANSACTION_DT = record[13]
             TRANSACTION_AMT = record[14]  
             OTHER_ID = record[15]
             
-            donor = Donor(CMTE_ID, NAME, ZIPCODE, TRANSACTION_DT, TRANSACTION_AMT, OTHER_ID)
+            donor = Donor(CMTE_ID, NAME, ZIP_CODE, TRANSACTION_DT, TRANSACTION_AMT, OTHER_ID)
             
               # determine if want to keep the record        
             if not valid_record(donor):
@@ -87,8 +87,8 @@ def gen_map(donors, percent):
 
         year=int(donor.TRANSACTION_DT[-4:])
         
-        donor_id = donor.NAME + '_' + donor.ZIPCODE
-        recip_id = donor.CMTE_ID + '_' + donor.ZIPCODE + '_' + str(year)
+        donor_id = donor.NAME + '_' + donor.ZIP_CODE
+        recip_id = donor.CMTE_ID + '_' + donor.ZIP_CODE + '_' + str(year)
         
         # store the earliest year a donor donated.        
         
@@ -104,9 +104,11 @@ def gen_map(donors, percent):
         percent_amt = int(round(percent_amt+1e-16))
         
         total_amt   = np.sum(recipient[recip_id])
+        if isinstance(total_amt, float): 
+            total_amt = "{:.2f}".format(total_amt)
         num_repeat  = len(recipient[recip_id])
         
-        yield '|'.join([donor.CMTE_ID, donor.ZIPCODE, str(year), str(percent_amt), str(total_amt), str(num_repeat)])
+        yield '|'.join([donor.CMTE_ID, donor.ZIP_CODE, str(year), str(percent_amt), str(total_amt), str(num_repeat)])
     
 
 
