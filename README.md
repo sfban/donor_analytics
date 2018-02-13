@@ -1,4 +1,18 @@
-### This is the report of Insight DataEngineer Code Challenge by Shufang Ban.
+## This is the report of Insight DataEngineer Code Challenge by Shufang Ban.
+
+   
+### How to Use
+
+To run the program, use following command in the root directory, which follows the instruction,
+
+python ./src/donation-analytics_sfban.py ./input/itcont.txt ./input/percentile.txt ./output/repeat_donors.txt
+
+where the first file is donor information input, second file is percentile input, and the last one is output.
+
+**Or**, simply run ./run.sh in the root directory.
+
+
+## Code Details
 
 The code was written in Python, version 3.6.0.
 
@@ -8,6 +22,7 @@ Following modules were used
    3) sys
    4) re
    5) datetime
+
    
 When the input data is huge or streaming in, generator is a good way to implement processing pipelines (fast, less memory and space).
 Using generator, the code could read-in and process the donation records one by one (function gen-records). 
@@ -111,7 +126,7 @@ There are 7 functions in total, including the main function. I will explain them
 
 
    
-### My Test cases
+### My Test cases (donor_analytics/insight_testsuite/tests/my_test_1/itcont.txt)
 
    1) 1st record: invalid CMTE_ID (empty)
    2) 2nd record: invalid NAME (digit)
@@ -121,12 +136,12 @@ There are 7 functions in total, including the main function. I will explain them
    6) 6th record: invalid OTHER_ID (not empty)
    7) 7~9th record: calender years in order of 2016 2015 2017, other informations are same
    8) 10-11th record: donor and repeat donor with interger donation amount
-   9) 12-13th record: donor and repear donor(different name from 10th record) with float donation amount(same recipient, zip code and calender year as 10th)
-   10) 14-15th record: donor and repear donor(different name from 10th record) with int donation amount(same recipient and zip code, different calender year)
-   11) 16-17th record: donor and repear donor(different name from 10th record) with int donation amount(same recipient and calender year, different zip code)
-   12) 18th record:              repear donor of 14-15th record with int donation amount(same recipient, zip code and calender year as 10th)
-   13) 19-20th record: donor and repear donor(different name from 10th record) with int donation amount(same recipient, zip code and calender year as 10th)
-   14) 21-22th record: donor and repear donor(different name from 10th record) with int donation amount(same recipient, zip code and calender year as 10th)
+   9) 12-13th record: donor and repeat donor(different name from 10th record) with float donation amount(same recipient, zip code and calender year as 10th)
+   10) 14-15th record: donor and repeat donor(different name from 10th record) with int donation amount(same recipient and zip code, different calender year)
+   11) 16-17th record: donor and repeat donor(different name from 10th record) with int donation amount(same recipient and calender year, different zip code)
+   12) 18th record:              repeat donor of 14-15th record with int donation amount(same recipient, zip code and calender year as 10th)
+   13) 19-20th record: donor and repeat donor(different name from 10th record) with int donation amount(same recipient, zip code and calender year as 10th)
+   14) 21-22th record: donor and repeat donor(different name from 10th record) with int donation amount(same recipient, zip code and calender year as 10th)
    
-   
+  
 
